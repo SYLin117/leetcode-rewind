@@ -37,13 +37,13 @@
 
 package leetcode.editor.en;
 
-import java.util.List;
+import java.util.*;
 
-public class NAryTreeLevelOrderTraversal{
-  public static void main(String[] args) {
-       Solution solution = new NAryTreeLevelOrderTraversal().new Solution();
-  }
-  //leetcode submit region begin(Prohibit modification and deletion)
+public class NAryTreeLevelOrderTraversal {
+    public static void main(String[] args) {
+        Solution solution = new NAryTreeLevelOrderTraversal().new Solution();
+    }
+    //leetcode submit region begin(Prohibit modification and deletion)
 /*
 // Definition for a Node.
 class Node {
@@ -63,11 +63,29 @@ class Node {
 };
 */
 
-class Solution {
-    public List<List<Integer>> levelOrder(Node root) {
-        
+    class Solution {
+        public List<List<Integer>> levelOrder(Node root) {
+            List<List<Integer>> result = new ArrayList<>();
+            if (root == null) return result;
+            // using BFS
+            Queue<Node> queue = new LinkedList<>();
+            queue.add(root);
+
+            while (!queue.isEmpty()) {
+                List<Integer> level = new ArrayList<>();
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    Node node = queue.poll();
+                    level.add(node.val);
+                    queue.addAll(node.children);
+                }
+                result.add(level);
+            }
+
+            return result;
+        }
+
     }
-}
 //leetcode submit region end(Prohibit modification and deletion)
 
 }
