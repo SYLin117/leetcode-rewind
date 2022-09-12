@@ -55,24 +55,85 @@
 
 package leetcode.editor.en;
 
+import sun.awt.image.ImageWatched;
+
+import java.util.*;
+
 public class LruCache {
     public static void main(String[] args) {
-        LRUCache solution = new LruCache().new LRUCache();
+        LRUCache solution = new LruCache().new LRUCache(2);
+        solution.put(2, 1);
+        solution.put(1, 2);
+        solution.put(2, 3);
+        solution.put(4, 1);
+        assert solution.get(1) == -1;
+        assert solution.get(2) == 3;
     }
+
 
     //leetcode submit region begin(Prohibit modification and deletion)
     class LRUCache {
 
-        public LRUCache(int capacity) {
+        class LinkedNode {
+            public int key;
+            public int value;
 
+            public LinkedNode(int key, int value) {
+                this.key = key;
+                this.value = value;
+            }
+        }
+
+        private List<LinkedNode> list;
+        private Map<Integer, LinkedNode> map;
+
+        private int size;
+
+        private final int CACHE_SIZE;
+
+        public LRUCache(int capacity) {
+            list = new ArrayList<>();
+            map = new HashMap<>();
+            CACHE_SIZE = capacity;
         }
 
         public int get(int key) {
-
+            if (map.getOrDefault(key, null) != null) {
+                LinkedNode node = map.get(key);
+                moveFront(node);
+                return node.value;
+            } else {
+                return -1;
+            }
         }
 
         public void put(int key, int value) {
+            if (map.containsKey(key)) {
+                LinkedNode node = map.get(key);
+                node.value = value;
+                moveFront(node);
+            } else {
+                LinkedNode newNode = new LinkedNode(key, value);
+                map.put(key, newNode);
+                if (list.isEmpty()) list.add(newNode);
+                else list.add(0, newNode);
+                if (list.size() > CACHE_SIZE) {
+                    remove();
+                }
+            }
+        }
 
+        private void moveFront(LinkedNode node) {
+            int index = list.indexOf(node);
+            list.remove(index);
+            if (list.isEmpty()) list.add(node);
+            else list.add(0, node);
+        }
+
+        public void remove() {
+            LinkedNode lastNode = list.get(list.size() - 1);
+            list.remove(list.size() - 1);
+            map.remove(lastNode.key);
         }
     }
 
